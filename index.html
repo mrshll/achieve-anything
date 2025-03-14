@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anything is an achievement with the right attitude</title>
     <style>
       body {
@@ -18,6 +19,7 @@
       h1 {
         text-align: center;
         margin-bottom: 20px;
+        font-size: 24px;
       }
 
       .container {
@@ -26,6 +28,7 @@
         justify-content: space-between;
         max-width: 1200px;
         margin: 0 auto;
+        gap: 20px;
       }
 
       .form-section,
@@ -35,15 +38,16 @@
         padding: 20px;
         box-sizing: border-box;
         border-radius: 5px;
+        width: 100%;
       }
 
       .form-section {
-        min-width: 420px;
+        min-width: 300px;
       }
 
       .preview-section {
         max-width: 460px;
-        min-width: 460px;
+        min-width: 300px;
       }
 
       .form-group {
@@ -93,6 +97,8 @@
         justify-content: center;
         margin-top: 15px;
         margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 5px;
       }
 
       .pagination button {
@@ -139,34 +145,28 @@
         object-fit: cover;
         border: 1px solid #8f98a0;
         box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
       }
       .achievement-text {
         display: flex;
         flex-direction: column;
+        min-width: 0;
       }
       .achievement-title {
         font-size: 18px;
         color: #ffffff;
         margin-bottom: 5px;
+        word-wrap: break-word;
       }
       .achievement-description {
         font-size: 14px;
         color: #c7d5e0;
         margin-bottom: 5px;
+        word-wrap: break-word;
       }
       .achievement-percentage {
         font-size: 12px;
         color: #8f98a0;
-      }
-      #downloadBtn {
-        background-color: #66c0f4;
-        color: #fff;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 14px;
-        border-radius: 3px;
-        margin-top: 20px;
       }
       .help-text {
         font-size: 12px;
@@ -174,6 +174,58 @@
         text-align: center;
         margin-top: 10px;
         font-style: italic;
+      }
+
+      /* Mobile specific styles */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        h1 {
+          font-size: 20px;
+        }
+
+        .container {
+          flex-direction: column;
+        }
+
+        .form-section,
+        .preview-section {
+          max-width: 100%;
+        }
+
+        .tile {
+          width: 48px;
+          height: 48px;
+        }
+
+        .pagination button {
+          padding: 10px;
+          margin: 0;
+        }
+
+        .achievement-content-container {
+          padding: 10px 15px 15px;
+        }
+
+        .achievement-icon {
+          width: 48px;
+          height: 48px;
+          margin-right: 10px;
+        }
+
+        .achievement-title {
+          font-size: 16px;
+        }
+
+        .achievement-description {
+          font-size: 13px;
+        }
+
+        .achievement-percentage {
+          font-size: 11px;
+        }
       }
     </style>
   </head>
@@ -190,7 +242,7 @@
         <div class="pagination">
           <button id="prevPage" disabled>Previous</button>
           <button id="nextPage" disabled>Next</button>
-          <button id="shuffleBtn">Shuffle Tiles</button>
+          <button id="shuffleBtn">Shuffle</button>
         </div>
         <div class="form-group">
           <label for="thumbnailInput">OR Enter a Custom Thumbnail URL</label>
@@ -783,8 +835,12 @@
         const grid = document.getElementById("tilesGrid");
         grid.innerHTML = "";
 
-        const start = currentPage * pageSize;
-        const end = Math.min(start + pageSize, tileImages.length);
+        // Adjust page size based on screen width
+        const isMobile = window.innerWidth <= 768;
+        const actualPageSize = isMobile ? 16 : pageSize;
+
+        const start = currentPage * actualPageSize;
+        const end = Math.min(start + actualPageSize, tileImages.length);
         for (let i = start; i < end; i++) {
           const img = document.createElement("img");
           img.src = tileImages[i];
@@ -825,6 +881,18 @@
         currentPage = 0;
         renderTiles();
       });
+
+      // Add URL input handler
+      document
+        .getElementById("thumbnailInput")
+        .addEventListener("change", function () {
+          if (this.value.trim() !== "") {
+            document.getElementById("thumbnailPreview").src = this.value.trim();
+          }
+        });
+
+      // Listen for window resize to adjust tile grid
+      window.addEventListener("resize", renderTiles);
 
       renderTiles(); // Initial load
     </script>
