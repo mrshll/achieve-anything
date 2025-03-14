@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Anything is an achievement with the right attitude</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #2a475e;
+        color: #c7d5e0;
+        margin: 0;
+        padding: 20px;
+      }
+      body * {
+        box-sizing: border-box;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .form-section,
+      .preview-section {
+        flex: 1;
+        background-color: #1b2838;
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+
+      .form-section {
+        min-width: 420px;
+      }
+
+      .preview-section {
+        max-width: 460px;
+        min-width: 460px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #c7d5e0;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        background-color: #2a475e;
+        border: 1px solid #c7d5e0;
+        border-radius: 3px;
+        color: #c7d5e0;
+      }
+
+      /* Tile selection area */
+      .tiles-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .tile {
+        width: 64px;
+        height: 64px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border 0.2s;
+      }
+      .tile:hover {
+        border: 2px solid #66c0f4;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        margin-bottom: 20px;
+      }
+
+      .pagination button {
+        background-color: #66c0f4;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        margin: 0 5px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 3px;
+      }
+      .pagination button:disabled {
+        background-color: #3a5269;
+        cursor: not-allowed;
+      }
+
+      /* Preview section */
+      .preview-container {
+        background-color: #434a4d;
+        padding: 10px;
+        display: inline-block;
+        width: 100%;
+      }
+      .achievement-header {
+        font-size: 14px;
+        color: #8f98a0;
+        margin-bottom: 10px;
+      }
+      .achievement-content-container {
+        background-color: #302f33;
+        padding: 14px 24px 24px;
+        box-shadow: inset 0 0 20px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .achievement-content {
+        display: flex;
+        align-items: center;
+      }
+      .achievement-icon {
+        width: 64px;
+        height: 64px;
+        margin-right: 20px;
+        object-fit: cover;
+        border: 1px solid #8f98a0;
+        box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+      }
+      .achievement-text {
+        display: flex;
+        flex-direction: column;
+      }
+      .achievement-title {
+        font-size: 18px;
+        color: #ffffff;
+        margin-bottom: 5px;
+      }
+      .achievement-description {
+        font-size: 14px;
+        color: #c7d5e0;
+        margin-bottom: 5px;
+      }
+      .achievement-percentage {
+        font-size: 12px;
+        color: #8f98a0;
+      }
+      #downloadBtn {
+        background-color: #66c0f4;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 3px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Anything can be an achievement with the right attitude</h1>
+
+    <div class="container">
+      <!-- Left Column: Form Inputs + Tileset Selection -->
+      <div class="form-section">
+        <!-- Tile Selection -->
+        <label>Select an Icon:</label>
+        <div class="tiles-container" id="tilesGrid"></div>
+
+        <div class="pagination">
+          <button id="prevPage" disabled>Previous</button>
+          <button id="nextPage" disabled>Next</button>
+          <button id="shuffleBtn">Shuffle Tiles</button>
+        </div>
+        <div class="form-group">
+          <label for="thumbnailInput">OR Enter a Custom Thumbnail URL</label>
+          <input
+            type="text"
+            id="thumbnailInput"
+            placeholder="Enter thumbnail URL (optional)"
+          />
+        </div>
+      </div>
+
+      <!-- Right Column: Live Preview -->
+      <div class="preview-section">
+        <div class="preview-container">
+          <div class="achievement-header" id="headerText">
+            POST-GAME SUMMARY
+          </div>
+          <div class="achievement-content-container">
+            <div class="achievement-header" id="timeText" contenteditable>
+              Yesterday
+            </div>
+            <div class="achievement-content">
+              <img
+                src=""
+                alt="Achievement Icon"
+                class="achievement-icon"
+                id="thumbnailPreview"
+              />
+              <div class="achievement-text">
+                <div
+                  class="achievement-title"
+                  id="titlePreview"
+                  contenteditable
+                >
+                  Achievement Title
+                </div>
+                <div
+                  class="achievement-description"
+                  id="descriptionPreview"
+                  contenteditable
+                >
+                  Achievement Description
+                </div>
+                <div
+                  class="achievement-percentage"
+                  id="percentagePreview"
+                  contenteditable
+                >
+                  0.0% of players have this achievement
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Image list (You provide this manually)
+      const tileImages = [
+        "tiles/00676040f97de8f215f139984de69e742781e934.jpg",
+        "tiles/0079eebffe85d1b08aaeae763004857b784e4207.jpg",
+        "tiles/0128504fc4ae9e6c812338ce0569c0c3330f61cb.jpg",
+        "tiles/0189449063ac1dec1eee2f29aed713ed758c0287.jpg",
+        "tiles/0252a2f3d3c3e4156a1d4ce2af2826bc2e30e350.jpg",
+        "tiles/0305cc1be45c03b05cde447ad4f6b614c4322b76.jpg",
+        "tiles/03158bd6dfa768f111c3666c46b39f77b2d3ca61.jpg",
+        "tiles/037a606c42b5695c250b1964d17b8b0e22e977e7.jpg",
+        "tiles/05efd0402d7195fb0eef93ace957b353e0bc1d38.jpg",
+        "tiles/0615c2451f1afa56b45c033991bad1ae10ff6a8f.jpg",
+        "tiles/067364e32a57d76a921a3aee76d01aa7d2413d07.jpg",
+        "tiles/06bce66d7738ddd537a1c1d77a438df1e8c17b17.jpg",
+        "tiles/06c3c0d8aa11e1d7f9d9899b1260a4669b6d4b15.jpg",
+        "tiles/06cda90c971bdf729fe816b2d7ec4197c35d6220.jpg",
+        "tiles/06e8b856984e8e70a2bc9eed2142abd6d4cdb864.jpg",
+        "tiles/0812cb6a6b9da0a844295409c1baaef2e0a69c4d.jpg",
+        "tiles/093f485ee2f811a2413aee20b2cf10a4a4b1f5fc.jpg",
+        "tiles/0963610ef8aceb69a358aa465186810c1bf3ef83.jpg",
+        "tiles/099016ea96d7f0b11e5382326119e4473127b4e0.jpg",
+        "tiles/0a3a81d00b34a4022e503905f42a172c58781ad2.jpg",
+        "tiles/0abefbfb22ef97d532d95fbb5261ff2d52f55e5f.jpg",
+        "tiles/0ae21a1af05a353ed8b0e609b3282c17110ccc4f.jpg",
+        "tiles/0b22e7a72cfe7651f1ecb344ae638d2bb51da6ba.jpg",
+        "tiles/0bd8f40a8c2bbb258ebc3922a8cce679f80bc9fe.jpg",
+        "tiles/0c3f5bca3d01c7df957e1baaefd8c3674dd0a277.jpg",
+        "tiles/0cb31fd9ec036550a374aa702a37464a98da3bfa.jpg",
+        "tiles/0d4a105ceddf478bfcaec479f352fdaf116ce6cd.jpg",
+        "tiles/0d7d18d4ae6bb690e0a02974017017f90d93ed3c.jpg",
+        "tiles/0dfd51a7ae1c5e122d1b46051d23234f5c5f681d.jpg",
+        "tiles/0e02597b5cb8a2f93b76771a061431718f8ab5c9.jpg",
+        "tiles/0e8e179496f071323789167ae58805111b393a69.jpg",
+        "tiles/0ea9318af5fdde94f75a98c668e71dd7561d6be1.jpg",
+        "tiles/0ecd4380e6894b7b738cfca5457b459c25030a65.jpg",
+        "tiles/0f047d834cf7bcfb12e11537966d2f621da0b224.jpg",
+        "tiles/0f2e4282150bd16233fc9611adccb1cd51506a1c.jpg",
+        "tiles/0f3ff1ce692344b71afa5f843e2baaa5b04fd1a4.jpg",
+        "tiles/0fcb2839c83b1b975ac90c02d068a708bd3e8827.jpg",
+        "tiles/1000b42e6328d415dfeed49b3503b41760e4312f.jpg",
+        "tiles/117bbd8e799335b81fbbe078684ac6179f35b8a9.jpg",
+        "tiles/14337f17195d82dc1f6b73d808c4ba84a335e41c.jpg",
+        "tiles/1447f383ac93b3064de2cb3a68ab90cd32628be1.jpg",
+        "tiles/15650a5075d2feb3ad0c46cb76c3a3721f74921f.jpg",
+        "tiles/161efeb2c826db8684c0e94b8354d6231b05dc69.jpg",
+        "tiles/164437109bd5008a106201a03e166702e5e00fcd.jpg",
+        "tiles/16c4753abb06c9477ee9d6cf75e2e84ecd677d80.jpg",
+        "tiles/172885dcb6a82300de9f34e8833afdf7d7cd24e1.jpg",
+        "tiles/175a500e6f5c68377f1031807485c3fdcf4b5da0.jpg",
+        "tiles/1809d535f9c747f47a93d25d3905909b30efb6d3.jpg",
+        "tiles/18467137a69d1aa89102236a1135cf2927361563.jpg",
+        "tiles/1b5f21f0b5669fe05af00532d548e203a8cddd92.jpg",
+        "tiles/1c337445a81756ab4694647bf2edd2d087ab1f3e.jpg",
+        "tiles/1d0099faa7edbfd6bf346f79b85db593b8105cb5.jpg",
+        "tiles/1e230f1a87d7139e854c47e52337f9d50856ac64.jpg",
+        "tiles/1e6a49c8fca227265012730daca09c7ba3597366.jpg",
+        "tiles/1ec72866879de9edd041b0c369f3a872d64a1e33.jpg",
+        "tiles/1f08b4e555e9d754092343743fc5b0ef647d2145.jpg",
+        "tiles/1f29576df2cbb20366bd7d2640c3dd28d894d22f.jpg",
+        "tiles/1fac5f33d3b53175bbdb7ae63b6ea876f4f9ae00.jpg",
+        "tiles/1facc7c237497710702f0151cec55d76028f0138.jpg",
+        "tiles/1ff9a37e2dc463f84d7ccd9ad8b1b28394d61a75.jpg",
+        "tiles/20196774926ded75ae8c8cc4a76af40493b17e5c.jpg",
+        "tiles/20eb640f54179a27671cd2c323bed614ae5c10f7.jpg",
+        "tiles/24fd6be458e467e4b39f78ae3eeb17f0de216ed4.jpg",
+        "tiles/254c3b8c6071744dac862e1ee26679468b4f7fdb.jpg",
+        "tiles/256160e557a1510c7780a43ed3d764045df2e090.jpg",
+        "tiles/2615323eda6955f29ae027a202379e16819c65a8.jpg",
+        "tiles/26156176d423eafd2e71feebda09c85a842d84d5.jpg",
+        "tiles/26215cc34746ef9e6da61de88c56f5c1d804539e.jpg",
+        "tiles/27010df31063587b3e1845f3dc793a44bb0c1ee1.jpg",
+        "tiles/2722377b0049c8fbf4ef8af5dc13e6431bec3b77.jpg",
+        "tiles/27959ea0cf5a36c735a730b6b1f7403cd6275c0a.jpg",
+        "tiles/279a9b7a2d50b65b6b30a939bbceffd556bb10ff.jpg",
+        "tiles/27a0dc4ef8970d4a02885bb9b16d40203bb00395.jpg",
+        "tiles/27a621d801b0618e152a422839d5cbd938c3545d.jpg",
+        "tiles/2835aee0e4ea73b5f9325a1e18bc69bbb9251a43.jpg",
+        "tiles/29b7097be5a572df5ca9c460bd15a8d87228e8b9.jpg",
+        "tiles/2a3c1688a41d0ec01612de83f81aad38555475e1.jpg",
+        "tiles/2ae08cb4b5f012f77c6dada69e66ab84734ce5d0.jpg",
+        "tiles/2b0e8ab079a7685f97242ad57017ea366e72a53a.jpg",
+        "tiles/2b342b9f7e82a9b90b0515bc25a0482386200087.jpg",
+        "tiles/2b58bf5884d6c5421e8bc91ca59f0799c07cc169.jpg",
+        "tiles/2b62db514927faac1a82e5beaa3db5bea73531ed.jpg",
+        "tiles/2b8c43b181cda65114dc7d500944dcad0ae33fc5.jpg",
+        "tiles/2c5b82e2335ea5d3854aeae123adc5ae28f2dfdb.jpg",
+        "tiles/2c92650ca214271a191e37c54e2ae9c92d82e160.jpg",
+        "tiles/2d8d06ca60766352271c45be26533876c9b190f8.jpg",
+        "tiles/2f146f0906eb35620bbcd5c5f59e622e395ee778.jpg",
+        "tiles/2ff06a635fc5058ece00966f7de3250f6755ffed.jpg",
+        "tiles/302b21b7e2267bf1ddd73167199d67a97b30cba1.jpg",
+        "tiles/30502a9b687d6d1dc0a821ab2d52da2d7daaff69.jpg",
+        "tiles/30544be3da4df4a803371dfee3bf211abae8f5a5.jpg",
+        "tiles/309fa8be50fb93b9bb5f3d0c9205edbcd64e4fa7.jpg",
+        "tiles/320b4df5abb9d267e1b824197ad59a00610038ab.",
+        "tiles/320b4df5abb9d267e1b824197ad59a00610038ab.jpg",
+        "tiles/325dce12b38d2d222ef9378f0814d4ceb6731b0a.jpg",
+        "tiles/32716cff98a32d329ef161d1ea1c02da5ad1fcfb.jpg",
+        "tiles/32df421f7ee3e8b6deb1ff809e634c19a969097c.jpg",
+        "tiles/33431756b3b1c7b4e6fde81a7f172f93cbc001ef.jpg",
+        "tiles/3522c45bc0866fbd2186f059c2863c1cfa20faa6.jpg",
+        "tiles/36706eb4531df0aea0894812b2316e5912b71848.jpg",
+        "tiles/37f1826323c8807e99f67245af707e7e716802fd.jpg",
+        "tiles/383def303d33f5490dd6c3fd3872ffa79c34e170.jpg",
+        "tiles/383f2b797dffe63e35ff4688a93d6feb1e45ea0d.jpg",
+        "tiles/3881b1c355ffcc122655c134f988d6c1265cd8c9.jpg",
+        "tiles/38dea9d506440e124441f9cd7b854d316c1c0e6b.jpg",
+        "tiles/3a58182f28e0d128c7faa6c406087195c8a46365.jpg",
+        "tiles/3abb63339a6d41a13ebec3fe5ec820d79adca30a.jpg",
+        "tiles/3b433a88a17c9a90402076e5d249d0b96736368f.jpg",
+        "tiles/3c0ae2202e27851d465c587eefab031b28f0b19a.jpg",
+        "tiles/3c5128368e47720ae3d51fdeebdd57a8a096c360.jpg",
+        "tiles/3c6d05ff648b66925238963a658ee307e31ff870.jpg",
+        "tiles/3cc127e3fa2063f2ea6ee2be289228916cb0e041.jpg",
+        "tiles/3cedb5f474038302aadbba351278fc92077fd434.jpg",
+        "tiles/3d750a73f5d64756ebabdd68ba5d2bd09dbb37e5.jpg",
+        "tiles/3deabac3724a189d6168c438d54ad70437f66df6.jpg",
+        "tiles/3e2dbec29c38c7ea568ff4cf1ba0a74609f8cc9e.jpg",
+        "tiles/3e4007c7fc436abd0d63ad112518d57396e8732d.jpg",
+        "tiles/3e8e60bc370e845c9f3eec5402542c39bfb9cdfa.jpg",
+        "tiles/3ea69158e50ac2b2611f48b1e52a58620294ec7b.jpg",
+        "tiles/3ebb5f75a716aa6fcab12b7354c3b87e971bcfd5.jpg",
+        "tiles/3f2fd490ac6a4136f24a83d639971489efab9c1f.jpg",
+        "tiles/3f66c46955da0371bcee434e5c4940ade452274f.jpg",
+        "tiles/3f85a84da4a166c91ee2ff75f79db6bea69fd286.jpg",
+        "tiles/3fac235576114d9374bfdde61c43d510fb4a3082.jpg",
+        "tiles/3fbc6f6741257f93b0c3125b19e415cfd3cd7941.jpg",
+        "tiles/4046c6fd3d4651abae6f8cf44b232079f336abfc.jpg",
+        "tiles/41532d8fb64e707951f5c34f167630b7f7a7a97d.jpg",
+        "tiles/41d6608783265cf28e2fa112bb51adbe90ad2086.jpg",
+        "tiles/4417569ad8f5559dc2777acbae75de54cd02d328.jpg",
+        "tiles/444bf7e756b888256c67707847c9f695fd3a5341.jpg",
+        "tiles/44a1e62eb3757dd129eec3f7ce04ddf5d2841f29.jpg",
+        "tiles/451ffd78a520111b68a2b63f0ba96614dd4e0e6d.jpg",
+        "tiles/45702bf45442c446c5700a78b1e0eab73d532b41.jpg",
+        "tiles/46449b53a49b31b40b82ea4e7378e919e0dcb847.jpg",
+        "tiles/465283ef2ed9ed9af8e9aa9f6632d95cfa2b6ee7.jpg",
+        "tiles/47859c34abda98b3192e432a91415286e2d4c94e.jpg",
+        "tiles/47ab32b9258f6145d3bdc5a6556b8c5298497f2b.jpg",
+        "tiles/47d756169551e9be7db84bdcdd814e5b4a6783a0.jpg",
+        "tiles/47daa8cf213809978d0f2ba9b514942c864ce452.jpg",
+        "tiles/48336874112fbe5359400bcd0cefe0b54eaf56f8.jpg",
+        "tiles/4878f46a89f35021318c51aed16540dc330fe7fd.jpg",
+        "tiles/488b436fec983eded73cb43b6c09469a38e1e324.jpg",
+        "tiles/48f745d9d6d37396f203fdcc6f27b7fef89f60b4.jpg",
+        "tiles/4a03a504d253e4c9417b0ad2f0744201cbe0eab8.jpg",
+        "tiles/4af81d9d65aac03cdffeca2759f9dfcb37eee95c.jpg",
+        "tiles/4b25c2a85e64261f890a53080132676acbce2bde.jpg",
+        "tiles/4b2acf1a027ce5d7bd77b7234215015c61410423.jpg",
+        "tiles/4b94c7a2015e58dc77970e25dadcb2a16fd588fa.jpg",
+        "tiles/4bfa374ef709d46349233f113eb035bca5527578.jpg",
+        "tiles/4d15734ebf3afa977c74bdc739c5816f30550ad2.jpg",
+        "tiles/4d4d73731f79cf0a13c472d2ee0039b85b0d4882.jpg",
+        "tiles/4d651ac095d988353bb73662b37b4c9f049a8ea2.jpg",
+        "tiles/4d8ae398dcedddee828027c6ea4ae8f7812b8dca.jpg",
+        "tiles/4e39a0ef22f4d9a5a926708eeeecb7ec3c304591.jpg",
+        "tiles/4f2c92b430a74890b653a1fc19b69d620c0a234e.jpg",
+        "tiles/4f9384e7f409c2f903a0bf0fd3bcc190be6dca9e.jpg",
+        "tiles/4f9ece252150e80a5b1413945f3602aa932cd440.jpg",
+        "tiles/4fb672f26ee1dc815d35770375420dfa12e30d6c.jpg",
+        "tiles/519f9993172bc19456917ca8aa8a96a6df34db05.jpg",
+        "tiles/525aa09055a5f9638ed5d0a29eaf72ce45123746.jpg",
+        "tiles/5267ac58fdbc3bdf6291c80caeca1b8db50db42d.jpg",
+        "tiles/52bda41c4932f6549a10cc2532343bdd0aae454f.jpg",
+        "tiles/53c23dd2cff73ea8f843f64e3c144b24d69c4887.jpg",
+        "tiles/5453d0ada86eab7930ba1f4b2257d190982cf164.jpg",
+        "tiles/548474923c87ed6a3a5e81db84fa8b07b5e984a8.jpg",
+        "tiles/55052157013cda249a48f19e7af4dd5e4f7bfd7a.jpg",
+        "tiles/5562080a70456bf17172b36e8a7cb3ef526bdb81.jpg",
+        "tiles/559b14d867e71caafd1596f107fade513abbd6d9.jpg",
+        "tiles/55bc1834e121ac2491350abd6609f73a9945be3d.jpg",
+        "tiles/5614f87b33ebd72ede06ac664695a6974f1e4c38.jpg",
+        "tiles/569e1b6a3624a1e12583bc653f7627e53459a988.jpg",
+        "tiles/56ca9c5b9ab7b9618273cc49c6fc65ab0555c8f8.jpg",
+        "tiles/571692415c4ec77803b28c79e6bbc764d1da293d.jpg",
+        "tiles/582abf5b81a5b4186159166d52b3e8b0d743d7ed.jpg",
+        "tiles/58e5289734ebe478904a65a9a5864ae9e2c8d6ae.jpg",
+        "tiles/59291415e026f667b59aabca48692c6c94846021.jpg",
+        "tiles/592ce016bbe33f20eb421336996d0db4f86038c2.jpg",
+        "tiles/5a010ddfb24e7ec60b856e220c3b5ac8ed0b76f7.jpg",
+        "tiles/5a32eb77d76e8ce77007b2efb65586620fa22e75.jpg",
+        "tiles/5ab17099ac69df7eef0c82bfead6d2e773a08366.jpg",
+        "tiles/5abb505355d6e861c8719483c1bf3977652f9883.jpg",
+        "tiles/5bed0edc27649f95161d876a3048f2ac4672c2b7.jpg",
+        "tiles/5ce1a6a4c2fb2f1f4bfca1dfe3b8aba39c086e0a.jpg",
+        "tiles/5ce4917084f8ed30a0f1f58c2e33835e6fe55e7e.jpg",
+        "tiles/5d6048252ba484b8d800d3f0347236abc27e68b0.jpg",
+        "tiles/5dde438eeea6e05e81aca40171ee1815ec453aeb.jpg",
+        "tiles/5e75517222ece0c44d32dc464cd6809754b558b1.jpg",
+        "tiles/5ed7ef1bd9c7c0fa767a7f46a34a59493db75739.jpg",
+        "tiles/60bf896ed2a5e9558fe7ec42215bd51ca7ef9b66.jpg",
+        "tiles/60de70f6c2dcfc880402f7c6fe1917ee9f695ed7.jpg",
+        "tiles/6146a5eb4eebc3d4461c3a455277422aff87b294.jpg",
+        "tiles/61aa6e87bcf6eefa6faf72fc1ad2e2e79f446149.jpg",
+        "tiles/61c96c056f9325b256f0dc408c99f31f42f0e7d1.jpg",
+        "tiles/61ffc206830404e94c6aac1307a724de6cce91c6.jpg",
+        "tiles/628cdbbfd2e731735e4817252ce6633bf3bcd8ed.jpg",
+        "tiles/62a2e522d5314fe3e401bc382c42d398fb726258.jpg",
+        "tiles/63ba645c7f26921b1b1257f582cec4ec3ef521f0.jpg",
+        "tiles/63cad15246c4447272519dc2fcf9cc4e047caf78.jpg",
+        "tiles/64a959417e64e4df7bf066996c3ce3dfd51be2a6.jpg",
+        "tiles/64b38dd2e3c987faa9c9af992720afde63567ade.jpg",
+        "tiles/654565f5d7c3124c40693a31f2f1fa1057edfe2a.jpg",
+        "tiles/6696d9380d915c5c93dae3058b82b2b77b227ab1.jpg",
+        "tiles/66d65af8020365fba87c01137d5c604b8e94f7b6.jpg",
+        "tiles/67092303d385b5cba12f64b311ca2e00b7781cf4.jpg",
+        "tiles/672ce2f92ccab5c284cc86282abe3d2bb3758d23.jpg",
+        "tiles/67508d5e2e3ee65989ddd1f9f4750685cc5cd367.jpg",
+        "tiles/684c577fe99b06a337bfe40668c5af0dedbf99ad.jpg",
+        "tiles/6961a6cf75bf1d0abcc89e74cc816318da330c0f.jpg",
+        "tiles/69dbb39a8b27f67d6689556def49173484e85f08.jpg",
+        "tiles/6b2c3014e7851dfa858896b346c79e339938e4c9.jpg",
+        "tiles/6b64cb61faf30aa8e7b4d76be87f6f410a6593c3.jpg",
+        "tiles/6cbc93bc86887fc2ea3964925e412180a093101b.jpg",
+        "tiles/6cc76d69168fca967357c7d6efc8cbce78830e63.jpg",
+        "tiles/6cd72921809ac7dd1b24a0b0a0f32c29219b21fd.jpg",
+        "tiles/6cf27f5d962b9c5e6e5eebe037db9b51b95cf2d6.jpg",
+        "tiles/6d3e9332cd1574e2ab74dce7305aaca8a86f8e7f.jpg",
+        "tiles/6d913069f2c7e24fccdeb0671b07eb3ce3b408cb.jpg",
+        "tiles/6e9f3df82232c28e1cfa27449baf0070a3987868.jpg",
+        "tiles/6ea22bb78aaa615d5b0c3e39e8319f574d7e6d2c.jpg",
+        "tiles/6ebc28450f801a7ef77ba241f98d01c2a2951696.jpg",
+        "tiles/6f5533c8ddc7add290bc7312898e6c6bd38c0ee7.jpg",
+        "tiles/701e6a0e4e6cdc8c1b246963bf81d51b05f08974.jpg",
+        "tiles/708b4afb6370bd8a054fad47c4a1fba457527524.jpg",
+        "tiles/70972fff002e080bdd5b86295f0241448bfe2481.jpg",
+        "tiles/7116a23314af64847d11c7a39c336d15e6756533.jpg",
+        "tiles/7219275cb5e7f38ad04b011e1490c89ef1e201bb.jpg",
+        "tiles/7253e34862b064e13eaff88621eef59e813e5237.jpg",
+        "tiles/726d0221c45950f7caa9ddf12aa6edbf82494ef8.jpg",
+        "tiles/72777eb5ca39b8dcbe90811b9f4e3b3c7353abd8.jpg",
+        "tiles/72d53386ef52ab6412d935ec89de7c1565474924.jpg",
+        "tiles/72f985e7287a3011554b361c11ab29b4c3288b22.jpg",
+        "tiles/73cec5f6e67587e9dce33c3883210f9d8d9043bf.jpg",
+        "tiles/73cede0b4c204ffe16fe158af76c3a4ce2fa0965.jpg",
+        "tiles/74ee1084138d6105ef39da43d3f969a86a28889f.jpg",
+        "tiles/75723ecc74d39c43f65a89f41e4af4d581d3b114.jpg",
+        "tiles/75e216062ee8c7d56758f42d20cf0601aaa8dcf7.jpg",
+        "tiles/7648f980938af51c9f1378ec1171673fc8d8d0b4.jpg",
+        "tiles/77ff71d0535176a6b9d8385be6e1d5e7c147754a.jpg",
+        "tiles/78b5a3f263bda12c2832c99da7e6e0839115b572.jpg",
+        "tiles/7944771c84a4ee57b9332b25dfeb9a7c0dea1cb8.jpg",
+        "tiles/794c03f6803f4fa9f3776ad1ee3636e787e2f84b.jpg",
+        "tiles/7a3b970478a793d15f90b81f3b27d713c76537ed.jpg",
+        "tiles/7b924b4e27a0b9dbe3df0599b50db79f9cde8e72.jpg",
+        "tiles/7c096eea47aed32635d7d449ad32c31a16909ea8.jpg",
+        "tiles/7caeb0ffe08795f799f3013594746edc9f73e15c.jpg",
+        "tiles/7eeadcd4687a8f0c2ed45091954961b0a2ba5d4f.jpg",
+        "tiles/7f428ade89f31a1ae4aae70a7c0851a875813460.jpg",
+        "tiles/7f59e0f260d0421c2cf0b169d05d0851d76a7015.jpg",
+        "tiles/7fe9d91fc2b76dce63e5f3cc9e0c4c0ecf6bc597.jpg",
+        "tiles/8006d947e065f146d94d7dc0c8e9b72b124cfa9b.jpg",
+        "tiles/8182226cff512e923298bf837aba7194da5ab097.jpg",
+        "tiles/81e6bcabd65cd5941eb72e20b89ee712082f6ae8.jpg",
+        "tiles/82008e9c90e7dce12eaf5b50571dc9511055d5f8.jpg",
+        "tiles/82ba235c066de96e420c1509839cf90f640d0a4a.jpg",
+        "tiles/834b3d6a15f33022d6ed4f5b432cad3dd5f3f9c9.jpg",
+        "tiles/83ad5a11a6d71a24c3bcf3850ae2027b4c44f4e2.jpg",
+        "tiles/843b78a83ddd0e47d8d6e9b543cfb92014ca0d92.jpg",
+        "tiles/8473536139c84fecb1ea46717fe652b29a09ac03.jpg",
+        "tiles/85cb8c09f5a5494c7b9476d26a472f2024c92f0e.jpg",
+        "tiles/85e1602e9597e714f3e8473996bb5e9f8b962cc6.jpg",
+        "tiles/863cb5f35133073d7b85a52fb1a7241e48f058fe.jpg",
+        "tiles/86d732f3dd57554afedae92d0209e3b8d56ac903.jpg",
+        "tiles/8788f814a7f09a21bc1c69aa0d851c42eb9a6c42.jpg",
+        "tiles/87c4d6f8671ec049d5a914566245befa8eef9922.jpg",
+        "tiles/889db2efcfe14b2b50b56c7c7126aeca7ab94ebd.jpg",
+        "tiles/89180d19216b000ec48a72c41369c43fe75bbe45.jpg",
+        "tiles/8972f4eb5bb8c4b071cb8e08889069c180e4d9ba.jpg",
+        "tiles/89b066019fbf7ff42463d11dc69e26d295978e34.jpg",
+        "tiles/89b2d81de97bdefd02f2f315b3105d081fc6c32d.jpg",
+        "tiles/8a3ca92dde3f7f2903e49cdbd7f349989b5d63bd.jpg",
+        "tiles/8aa5c2120ca0ec1abd63fc4ab5afea919acadfc5.jpg",
+        "tiles/8b247d086a1c6158ecbebf00ae06a9860f7f57bd.jpg",
+        "tiles/8baefbd3210685945bea289cf21cdcbe83822ba9.jpg",
+        "tiles/8c24986938b1dfae0090581bab68432485b237c7.jpg",
+        "tiles/8ce6e5b72971fc93aef368a509384a8906cdfb3f.jpg",
+        "tiles/8d9b00f2e1a91cf3dd08c5ee496e45cae74370a7.jpg",
+        "tiles/8e30dc46d1ce4e47fbd49468d8f231b080256e9b.jpg",
+        "tiles/8e8b045585d45181db748d7afd76ff975591a0bf.jpg",
+        "tiles/90ac104163bc28e4503e866da4a155fc775baba0.jpg",
+        "tiles/90ade599117c7a4de71bc2e27144351c4f3bb34f.jpg",
+        "tiles/91f95455b0afb3582d36db79c6d18ef7bf65b6ef.jpg",
+        "tiles/92ca5c14534417a92b13f8acc7918a9ff9c28db4.jpg",
+        "tiles/92e9d5ff698409f4c9617c3aaff5b2e183e4984f.jpg",
+        "tiles/93a401997b732ffec5cced8ae00143636a1fb4f4.jpg",
+        "tiles/93bc3a72d4f250355eb9fd33f75d0fa1389c4e3b.jpg",
+        "tiles/94e4e841aec702f5286bb37699e9b6122c5db0b0.jpg",
+        "tiles/95a6c1398d842a3fdea1b43a14b33bef92dca09e.jpg",
+        "tiles/9656e962f72f11dfe071bb8b0781c857a0d5de71.jpg",
+        "tiles/969cc50dcb65bc3993966fba3b732227db209472.jpg",
+        "tiles/96ef027669c1e15913f8b27df4cefbf4736449e4.jpg",
+        "tiles/97612ba228ca18a0db3cf17f5b54cb0e30c656f4.jpg",
+        "tiles/979fd1577c7ded677c593f98873d5f3ef85ae96e.jpg",
+        "tiles/98029642dc818a308eb47bcf0e4d149fdb30945d.jpg",
+        "tiles/9810c0b6cb55e45931300079acbcf9e190cf9f5a.jpg",
+        "tiles/9844ceb487fa8702ef9fddf8cf09b3767d985a14.jpg",
+        "tiles/9857c395806704c51a75b562ca6b935f83ab5718.jpg",
+        "tiles/98647b491adb794c1b5cc7eaf92cb7f721c8f79f.jpg",
+        "tiles/9a137ed56f0a0900543818cc957189864358e672.jpg",
+        "tiles/9a2a1f6fdb8f731f2f8e61f9e1c02a75e1ca892d.jpg",
+        "tiles/9b33bb1e6c60187a1193a0a790e1f7c99efca1ac.jpg",
+        "tiles/9b5e347921fffc56e95b4adb2e30e4bbd3507de7.jpg",
+        "tiles/9bd4bc4de4d330f11cb35293d6b8868a786b8a52.jpg",
+        "tiles/9c07762f2b068f92f30b7743e792f07578ad898e.jpg",
+        "tiles/9c1231f530788d9aa21e1a858fbb9e85e0cb64f8.jpg",
+        "tiles/9c4125404aab94b122873ee84cd8a351d9de083d.jpg",
+        "tiles/9d3ec9f89fc6b0a8c7a6fc791b573de910ccfcc8.jpg",
+        "tiles/9d8d74f63128ddd762ef4f5855903dc309f5d555.jpg",
+        "tiles/9f5c449a3a0b1077365cbe81c92ceb6f4079d081.jpg",
+        "tiles/a06ef4d522e2d61a8fd7636cd41fb19a218cc650.jpg",
+        "tiles/a1a51986763e6831e4c6dc6e1743d0fd6786b612.jpg",
+        "tiles/a3aa654595a6457ce6ff52528bea9321f8c3ec37.jpg",
+        "tiles/a4b324de733ebc348191898de86fbc9bbe9ad6ac.jpg",
+        "tiles/a514f59399d163afc8668331c6730148e560455b.jpg",
+        "tiles/a546ce1480e1423102315f5844f3d89423b6dbdc.jpg",
+        "tiles/a578239dd27956fbfddf6260cb88f10b98c82058.jpg",
+        "tiles/a6cf68544d54d259baf1a2725b420e7d436c6bf0.jpg",
+        "tiles/a6d9697bd40e33c142d7f50c4d60210e80f2aa6c.jpg",
+        "tiles/a7a19a55e628a51ba04c2e658dad259a4b356034.jpg",
+        "tiles/a85359a4138d58422c11263bd183fe682cf55eb1.jpg",
+        "tiles/a8640cfeb70e02f3ed91f8bb56b25e1cd60c1788.jpg",
+        "tiles/a991cf641f22feecca00c96ae773e31740535b2b.jpg",
+        "tiles/a9ee13ee9d602b4f3b3957546e3df09117050eae.jpg",
+        "tiles/aaff0917803775aec211fe9f6298ad316372f773.jpg",
+        "tiles/ab0257823ec441e49ded5e3480223066cde16f01.jpg",
+        "tiles/ab33d6851524766eca280a0fc7daedd979641c93.jpg",
+        "tiles/ac268765ca48d4656e52e510af09eca78e8656b5.jpg",
+        "tiles/ac418243203c3caea7b736bdaae73621b0c75743.jpg",
+        "tiles/ac44fb971c0fb5f0c599a8eadca7e2b921d96d67.jpg",
+        "tiles/ac5be1604c11886c589749459666745d43bba73b.jpg",
+        "tiles/ac80f6cd1f433eae3b689837f2c2cf00bd025ba6.jpg",
+        "tiles/ad33ceb49602c125e039c563df6db1ab39c5b64d.jpg",
+        "tiles/af6e662e498fdbf5dd380f2a1173a860f7225658.jpg",
+        "tiles/af906e4e0222f9d263ca0635657ded5344587902.jpg",
+        "tiles/afb64d3cb609f21d763ee7bc87c7b6362efbe3d9.jpg",
+        "tiles/b0166a84e8db090891e97be592b8a266d44cbe6b.jpg",
+        "tiles/b04c5f6f0c73469e3b7709302dd7583149c70b43.jpg",
+        "tiles/b19defe98dda37b06db581a065cd64df83330ca4.jpg",
+        "tiles/b2073be2135a753a0096d15c9238716e2b21ed90.jpg",
+        "tiles/b2896a8e911eafeea26e2daf49f7b705691bf514.jpg",
+        "tiles/b472f2209fe4faea9961f04f9ccf08774ad92248.jpg",
+        "tiles/b47b4f51ff9bd68758727bfc773b3f98b5de7083.jpg",
+        "tiles/b4a6ce6641fde815104bc18446f95a7512c55f95.jpg",
+        "tiles/b5a2a3544279046b5db121b3f8b03d6eebda2389.jpg",
+        "tiles/b5cf65f870ce89ebbe97ff5cd349d65cd0630ad2.jpg",
+        "tiles/b5e42788dab09aa776cc9927502be2d96dbe7b17.jpg",
+        "tiles/b668429392fd2600ae86857e11eef003b78c411f.jpg",
+        "tiles/b691657c39f21eadf9cad09eceba0397d7e1f6d1.jpg",
+        "tiles/b69f27966bb176b5b6d5d81f8894657150fcce1d.jpg",
+        "tiles/b73ce3f53650eae1f0b2d10fd12f6786b87db062.jpg",
+        "tiles/b860519c15f81e1beb63e7f6a2187ccd1634a155.jpg",
+        "tiles/b885c3cbc62b3bf2caa355c3b6e5302aa7f55fba.jpg",
+        "tiles/b8cd970249b523b81d24492aae276b0babfb5c2c.jpg",
+        "tiles/b8f57141c6077fc6f64040e80e723f8259abd977.jpg",
+        "tiles/b91bb0c7fbdfc8acfee17b98590e3fa5bc0a48b4.jpg",
+        "tiles/b9255b2325bff7b02b289fb8899d305cc04a18bc.jpg",
+        "tiles/b9581ae55c649573d25e7bddc10e73bbe5423808.jpg",
+        "tiles/ba74d44be1b3566286c8403c12a29140366972f0.jpg",
+        "tiles/bae275fe7fa4b16d3ea85979859fd063cd291c10.jpg",
+        "tiles/bb553ac31f0f4562d6becab271a3aa010800b181.jpg",
+        "tiles/bb817a7db2216e90a18ff3eab8fb0800b4f9892d.jpg",
+        "tiles/bbac9c050eeefcf2e244566d077bc9c4170ac3cf.jpg",
+        "tiles/bbcf5d6458728d5de49aea1ac26ca7b183188d88.jpg",
+        "tiles/bbe5a56263dc6acac7538f383cd372ffc2541529.jpg",
+        "tiles/bc15ac54d214e8a0cacb4b315e6b04d6e4f5b79e.jpg",
+        "tiles/bd574766f04f7d47c4bc0639344ef0561e0cc310.jpg",
+        "tiles/be075562bf2a1ad6ef6e25db637592a0cd83504d.jpg",
+        "tiles/be0982fa473e0effd837d46bd1ecbcd2a0fff7f0.jpg",
+        "tiles/be4b96f669705dd35d2c4f95849716e7bcb416c4.jpg",
+        "tiles/bf7dbe8ff865f00de6dae2b534a6692ceb7fe60b.jpg",
+        "tiles/bfb973bf2c11b0bfb21c43ea7285363e530bbf64.jpg",
+        "tiles/c0057b140fb9a4bf3a745747613026f825f9fff2.jpg",
+        "tiles/c013ef22ece989fe35167c14faaff8fd8201af62.jpg",
+        "tiles/c04867354881260d9724f931363418255da8aaae.jpg",
+        "tiles/c057febe46bd7e08cc8c3e5d6e179b0f98892b5a.jpg",
+        "tiles/c0635b86d62227a3b2852084a91f8a53e2d9a164.jpg",
+        "tiles/c06398776be194190d2842be15a64f6e907e4cc9.jpg",
+        "tiles/c12b9c1e5e54fdddf63394785effda62cb6f1d48.jpg",
+        "tiles/c179a0f91b0a72802613f6279dd1fde010eef36e.jpg",
+        "tiles/c267972efe451c9e075824aea35dc6b6cf76bc49.jpg",
+        "tiles/c446e14667af723cb2b51b369b573e58b14757a1.jpg",
+        "tiles/c4abb632339a1a4741e4b792092088c2874ff871.jpg",
+        "tiles/c5549e2df862671ed14db87d3650f9f91907438e.jpg",
+        "tiles/c56dcddb3dfae8379ce5455737c102ce75bc1815.jpg",
+        "tiles/c5d113af51a27379c63aa52022bbefb88de18b15.jpg",
+        "tiles/c6f0f6968b52c2ebc115103db81794a3bcb3e2d1.jpg",
+        "tiles/c753502ee8841b98524634e726ef109726d68c66.jpg",
+        "tiles/c77588e8a25741098ac71ae64f4b08d84e357310.jpg",
+        "tiles/c8701a660f57525f02d15e72054f9d29149ecd9c.jpg",
+        "tiles/c8cd2e6345f92a538875ac8f42749b8254fbce47.jpg",
+        "tiles/c9465eae8df64ede2337b57ed2f17c2bfdad44b0.jpg",
+        "tiles/c9624c5c976674a86d6e55a65f18203407acb4b4.jpg",
+        "tiles/cab0bb59792cf163628ad5e6149b38c2e9df8ff6.jpg",
+        "tiles/cb0aec39fcc664c4e586750177178b6814a52e0d.jpg",
+        "tiles/cb2f6df417ebfc811b3e9afe5d0a8f5225ec1a17.jpg",
+        "tiles/cc1a63fce03ab5580530c8efcef4a86a46708a39.jpg",
+        "tiles/ccb4919ec70693cb4009734ef5b4379ba33e0b4c.jpg",
+        "tiles/cd599c554c68d307c6cad1c637dc613a3026df4a.jpg",
+        "tiles/ce1de7520a5323ca76a90bf4f4c3161356dc9e97.jpg",
+        "tiles/cee341d6bcdada7e07168d640fa4cb61b9d8693c.jpg",
+        "tiles/cf3d330460ae75272e4d4a3a2a6781b69feee177.jpg",
+        "tiles/cf3d4bddd14e1019f2b6d6532b322f2b19f549bd.jpg",
+        "tiles/cf444b7bd2b414b4ac91f08893b39bc8c7115ecf.jpg",
+        "tiles/cfa074522dc981b053ce9ae9cf90527cbd423d64.jpg",
+        "tiles/cfbd9f28603da41587d659789c099a411ab72847.jpg",
+        "tiles/d14c9ce84aa934451c6e6894c0e488d171917bf1.jpg",
+        "tiles/d18208104aa95484af500201e1907b7da1e8c7d1.jpg",
+        "tiles/d19bc5323d0e4c093498b26b73366a5e0bb494a2.jpg",
+        "tiles/d1baa6192bf2b528ffcf77ca431466cfe4f80263.jpg",
+        "tiles/d1c08aabf952603a1f50f696c90ea45d7074c3ac.jpg",
+        "tiles/d1d3f628190197f598685cf990772d75aba2438a.jpg",
+        "tiles/d2aa6c80333592fec73c2b123718dcf3620d2e56.jpg",
+        "tiles/d2fa191b346b050bf3557e62106b77e91efa0d98.jpg",
+        "tiles/d34621523f32eee14947c698bb43ef92b09f0f59.jpg",
+        "tiles/d39ced542e2a857be2c7989e41b60749d3b721fe.jpg",
+        "tiles/d3a7fbca2549d043955d33cb5eaf30259dcf41ac.jpg",
+        "tiles/d45e4eb901aabd6ce6f12fd13512290f95b78e75.jpg",
+        "tiles/d5821f0ecea43b80917fb3d7625593fa3331382d.jpg",
+        "tiles/d5af89a5ca1328096dcd1d741a8d50dbe5d0646a.jpg",
+        "tiles/d61af8d66466b1f8db19c0e95597adff084703c0.jpg",
+        "tiles/d6e86d6db14456e036e1ddd2d3b89761d1d72696.jpg",
+        "tiles/d83ddce8215d5ffd142c8adcdc22dae746f1fda1.jpg",
+        "tiles/d926aba9399959ea7b76559b46ccd3d26bbe54c2.jpg",
+        "tiles/d92b5372fbf62e667c33d109edc0a28a6aa12383.jpg",
+        "tiles/d9bc497a2e63c89118cc774329a37b3e0bd6cac1.jpg",
+        "tiles/dadbc866606e4b4464fcdbf6684e3f2ec207ad73.jpg",
+        "tiles/db1479f8759b7d345cdc37af7043909cb7a1f6cf.jpg",
+        "tiles/db519a5c4b5f032ffea4ceaba4e7ecd9d23ed26d.jpg",
+        "tiles/dbe0b730ab932ebb2baf3615afc9fe0db6900a3b.jpg",
+        "tiles/dc7f3ed206ae43b16b38204dcfcf13db9f99595a.jpg",
+        "tiles/dcf9e5dde9a3f28a8080823c5e7c6f0e72ea3dbd.jpg",
+        "tiles/dd319d4bc1c97c09afc8aeb0ca501254de19fef1.jpg",
+        "tiles/dd33d56ceddeaf948f0fee3df08a4d1399e2cd27.jpg",
+        "tiles/ddca5e5157d6a1d3ef4fb35c3af09f446c233a3b.jpg",
+        "tiles/de14ada7d13be64a7bbbc7031df0d4e2134e2eee.jpg",
+        "tiles/de4e372bd055dd4ab00f6036a133d0be87930a4a.jpg",
+        "tiles/dea8ab9cdda554a8fd720441320d86535df045ab.jpg",
+        "tiles/dec7164a0bf5c29fffbc4aaf56e41f6af601da42.jpg",
+        "tiles/df7eaaa67e75024d42c6e7fdd36c1bdaf351fb28.jpg",
+        "tiles/df9981920ef3bbd0db48628b3ba91099982037f6.jpg",
+        "tiles/dfc0373581676756d0fad0932828fb249103f21d.jpg",
+        "tiles/dffac3c431ff07d705ae86cfad147f1a490b39be.jpg",
+        "tiles/e0197063957b19834f747e266ef126dd436e4245.jpg",
+        "tiles/e0e0b22f188d62b996ef3eaa061f81a0512326ab.jpg",
+        "tiles/e1501bd00f9a3f098dc1c74badb960d1c3135c52.jpg",
+        "tiles/e179bc825bc7950f43e5585bfef9007525c6b980.jpg",
+        "tiles/e2465091d1b9bd25b8208b34fdcce95e5c5d423c.jpg",
+        "tiles/e272e45f0362bedc09c79b88ac020fb79fe6a35e.jpg",
+        "tiles/e3cebe792d4d59763de406016c5a01b4962828df.jpg",
+        "tiles/e4006d38d228879156ab10909d076a744a9be558.jpg",
+        "tiles/e4b77ffaba4944288b5fbf1b0403ed271075909d.jpg",
+        "tiles/e4fc015aa04969bb84a27016cd6b4d2d7f337e4a.jpg",
+        "tiles/e511650da044982177335b2a8dd7b9867db4ba78.jpg",
+        "tiles/e572e6c0afb781aa6943c4c592825566198f6151.jpg",
+        "tiles/e58d823ae6596d4614a59bf94b13f33b00b22ad2.jpg",
+        "tiles/e62b3a7fb2bc6ba45e5ce8e4ade5d7a5a1139ffb.jpg",
+        "tiles/e7fcfd054f64ea2c3b022906bb059103167ef98e.jpg",
+        "tiles/e7fcfd5064d642678d1f1caa7cd3ac67e5835baa.jpg",
+        "tiles/e81bdf3eea930c70947784b12925da1f98c8a7f3.jpg",
+        "tiles/e896f5e912f2b2834d2b5afeaff76e55483c1a59.jpg",
+        "tiles/e8cc88cc0fd87b33aba59236960c5daf3cbf12f0.jpg",
+        "tiles/e9891168fea8ffba57727531bac730ce8d6033c2.jpg",
+        "tiles/ea3f7fd5ab7c15b95e61cc3c978484233f5426bc.jpg",
+        "tiles/eb5b8702ca6ab1290d6185b96606acd037794b9c.jpg",
+        "tiles/ebd9fea39ab93529f84b614f6de9196d8bedc1b4.jpg",
+        "tiles/ec29e6ac1504d8e40487a1e15af5ad5acca142a1.jpg",
+        "tiles/ecd435323119579216ebcffebae690ae2e5c13eb.jpg",
+        "tiles/ed2e5bef54a0e2ddad182a208f9d67ba8ce56824.jpg",
+        "tiles/ee485b2691c324a86a6c66cf669ea88e187af778.jpg",
+        "tiles/ee6370e20f9b0f67732ae139f34a281fcd0f12dc.jpg",
+        "tiles/ef167cec300bb461ea04eef4058b791e1f48836f.jpg",
+        "tiles/f015a7458e7bd0dd6b2e2492f9d04096a8d6b95b.jpg",
+        "tiles/f0a4b79e287afa71def873cf446fd84b42ad503c.jpg",
+        "tiles/f23f59b7c5a569ee4ec6b49f1c0e8ad472233232.jpg",
+        "tiles/f2544b51eae01828d9509961400f31fa91aea5a6.jpg",
+        "tiles/f41bb6a498bc5b809bfcb4ab514d8894b1ee5b74.jpg",
+        "tiles/f4e5fd19d3410470709632cd02b3136b5baca33d.jpg",
+        "tiles/f5f1f41ef749459d9ac45750cd1f069d05fe1dd8.jpg",
+        "tiles/f69d337d9a4a6ccbefbe3423cf4a041c4c50591a.jpg",
+        "tiles/f73cd6a69ad1b32115bbfcf7ad0433e22443fd03.jpg",
+        "tiles/f813adbb9c031c458872dad2526de97b904829fd.jpg",
+        "tiles/f82fc20286a7b31ba251056cfd658569a649cfb6.jpg",
+        "tiles/f922e40d0cd2e88baef7e907bdfbc42d378dbc55.jpg",
+        "tiles/fa5439760c3d8a500ed77c01f1dee6afe4efdf1c.jpg",
+        "tiles/faf096df4e64bb1b785f97dbdd0987b95ed24c41.jpg",
+        "tiles/faf7df138a00bfdc550cbcddc1e4dfa991e2132c.jpg",
+        "tiles/fb2ec6d4da98da79b7fb7f14c5f5c290bd9859ed.jpg",
+        "tiles/fb6c068bc1f39b1bcbdd20ddb880b9f8a8d2c00b.jpg",
+        "tiles/fbc52ecadb8550eaea29c1b7df24eb67565d1a2d.jpg",
+        "tiles/fbfc3b5ffbf3212ac8c89ca59f4fe6c8e137f585.jpg",
+        "tiles/fc95da156e92c9d6f0955236d77bbe07e36f06e9.jpg",
+        "tiles/fcff9fa729c24ca9fa4cf30513687fe0afeb3ca5.jpg",
+        "tiles/fd0baa71d198cbd1d0a53b3ba848df27f121e775.jpg",
+        "tiles/fdc3d35c26649658f33752fee82ca18b08758a64.jpg",
+        "tiles/fe060d2713a9b932f0872b90c2bbc98d3027e90c.jpg",
+        "tiles/feb50275d1d98c77ceb4e3b3e96819bd6e1628ba.jpg",
+        "tiles/feedc689e6058527c0a4d4a41ce2a08c88e44f29.jpg",
+        "tiles/portal_beat_2advancedmaps.jpg",
+        "tiles/portal_beat_4advancedmaps.jpg",
+        "tiles/portal_beat_6advancedmaps.jpg",
+        "tiles/portal_beat_game.jpg",
+        "tiles/portal_detach_all_cameras_bw.jpg",
+        "tiles/portal_escape_testchambers.jpg",
+        "tiles/portal_get_allbronze_bw.jpg",
+        "tiles/portal_get_allgold_bw.jpg",
+        "tiles/portal_get_allsilver_bw.jpg",
+        "tiles/portal_getportalguns.jpg",
+        "tiles/portal_hit_turret_with_turret.jpg",
+        "tiles/portal_infinitefall_bw.jpg",
+        "tiles/portal_kill_companioncube.jpg",
+        "tiles/portal_longjump.jpg",
+      ];
+      // Function to get a random item from an array
+      function getRandomItem(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      // Set a random initial tile image
+      document.addEventListener("DOMContentLoaded", function () {
+        const randomTile = getRandomItem(tileImages);
+        document.getElementById("thumbnailPreview").src = randomTile;
+      });
+
+      const pageSize = 16;
+      let currentPage = 0;
+
+      function renderTiles() {
+        const grid = document.getElementById("tilesGrid");
+        grid.innerHTML = "";
+
+        const start = currentPage * pageSize;
+        const end = Math.min(start + pageSize, tileImages.length);
+        for (let i = start; i < end; i++) {
+          const img = document.createElement("img");
+          img.src = tileImages[i];
+          img.classList.add("tile");
+          img.addEventListener("click", () => selectTile(tileImages[i]));
+          grid.appendChild(img);
+        }
+
+        document.getElementById("prevPage").disabled = currentPage === 0;
+        document.getElementById("nextPage").disabled = end >= tileImages.length;
+      }
+
+      function selectTile(src) {
+        document.getElementById("thumbnailPreview").src = src;
+      }
+
+      document.getElementById("prevPage").addEventListener("click", () => {
+        currentPage--;
+        renderTiles();
+      });
+
+      document.getElementById("nextPage").addEventListener("click", () => {
+        currentPage++;
+        renderTiles();
+      });
+
+      // Shuffle function using Fisher-Yates algorithm
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      // Add event listener for shuffle button
+      document.getElementById("shuffleBtn").addEventListener("click", () => {
+        shuffleArray(tileImages);
+        currentPage = 0;
+        renderTiles();
+      });
+
+      renderTiles(); // Initial load
+    </script>
+  </body>
+</html>
